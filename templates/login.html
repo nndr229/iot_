@@ -1,0 +1,16 @@
+<!-- login.html content from scaffold -->
+{% extends 'base.html' %} {% block content %}
+<div class="auth-card">
+  <h1>Sign in</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <label>Email {{ form.email(class_='input') }}</label>
+    <label>Password {{ form.password(class_='input') }}</label>
+    <label class="checkbox">{{ form.remember() }} Remember me</label>
+    <button class="btn" type="submit">Sign in</button>
+    <p class="muted">
+      No account? <a href="{{ url_for('register') }}">Register</a>
+    </p>
+  </form>
+</div>
+{% endblock %}

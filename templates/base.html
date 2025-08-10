@@ -1,0 +1,82 @@
+<!-- base.html content from scaffold -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title or 'IoT Home Automation' }}</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/modern-normalize/modern-normalize.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <!-- Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="brand">🏠 IoT Control</div>
+      <nav>
+        <a href="{{ url_for('index') }}" class="nav-link">Dashboard</a>
+        {% if current_user.is_authenticated and current_user.is_superuser %}
+        <a href="{{ url_for('admin') }}" class="nav-link">Admin</a>
+        {% endif %}
+      </nav>
+      <div class="spacer"></div>
+      {% if current_user.is_authenticated %}
+      <div class="userbox">
+        <div class="user">{{ current_user.name }}</div>
+        <a class="btn btn-ghost" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+      {% endif %}
+    </aside>
+    <main class="main">
+      {% block content %}{% endblock %}
+      <!-- Floating Support Chat (Gemini) -->
+      <div id="chat-fab" class="chat-fab" title="Support">💬</div>
+
+      <div id="chat-drawer" class="chat-drawer" aria-hidden="true">
+        <div class="chat-drawer-header">
+          <strong>Support</strong>
+          <button id="chat-close" class="chat-close" aria-label="Close">
+            ✕
+          </button>
+        </div>
+        <div id="chat-log" class="chat-drawer-log"></div>
+        <div class="chat-drawer-input">
+          <input
+            id="chat-input"
+            class="input"
+            placeholder="Ask customer support…"
+          />
+          <button id="chat-send" class="btn">Send</button>
+        </div>
+      </div>
+    </main>
+    <script defer src="{{ url_for('static', filename='app.js') }}">
+
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (document.getElementById('map')) {
+          initMap();
+        }
+        if (document.getElementById('device-list')) {
+          renderDevices();
+        }
+      });
+    </script>
+  </body>
+</html>

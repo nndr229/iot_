@@ -1,0 +1,27 @@
+<!-- dashboard.html content from scaffold -->
+{% extends 'base.html' %} {% block content %}
+<section class="grid">
+  <div class="panel">
+    <h2>World Map</h2>
+    <div id="map" class="map"></div>
+  </div>
+  <div class="panel">
+    <h2>Devices</h2>
+    <div id="device-list" class="device-list"
+  </div>
+  <div class="panel">
+    <h2>Support</h2>
+    <div class="support">
+      <div id="support-log" class="support-log"></div>
+      <div class="support-input">
+        <input
+          id="support-text"
+          class="input"
+          placeholder="Ask customer support…"
+        />
+        <button class="btn" onclick="sendSupport()">Send</button>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

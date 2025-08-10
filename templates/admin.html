@@ -1,0 +1,131 @@
+{% extends 'base.html' %} {% block content %}
+<section class="grid">
+  <div class="panel">
+    <h2>Locations</h2>
+    <form onsubmit="return createLocation(event)">
+      <div class="row">
+        <input class="input" name="name" placeholder="Name" required />
+        <input class="input" name="country" placeholder="Country" required />
+      </div>
+      <div class="row">
+        <input class="input" name="lat" placeholder="Lat" required />
+        <input class="input" name="lon" placeholder="Lon" required />
+      </div>
+      <button class="btn" type="submit">Add Location</button>
+    </form>
+    <div id="locations" style="margin-top: 0.8rem"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Create Device</h2>
+    <form onsubmit="return createDevice(event)">
+      <input class="input" name="name" placeholder="Device name" required />
+      <input
+        class="input"
+        name="type"
+        placeholder="Type (light/pump)"
+        required
+      />
+      <input
+        class="input"
+        name="location_id"
+        id="device_location_id"
+        placeholder="Location ID"
+        required
+      />
+      <button class="btn" type="submit">Create</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Assign User to Location</h2>
+    <form onsubmit="return assignUser(event)">
+      <div class="row">
+        <input
+          class="input"
+          name="user_id"
+          id="assign_user_id"
+          placeholder="User ID"
+          required
+        />
+        <input
+          class="input"
+          name="location_id"
+          id="assign_location_id"
+          placeholder="Location ID"
+          required
+        />
+      </div>
+      <button class="btn" type="submit">Assign</button>
+    </form>
+    <p class="muted" style="margin-top: 0.4rem">
+      Tip: click a row in the Users table or Locations table to auto-fill.
+    </p>
+  </div>
+
+  <div class="panel" style="grid-column: 1 / -1">
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      "
+    >
+      <h2>Users</h2>
+      <input
+        class="input"
+        id="user-search"
+        placeholder="Search users by name/email…"
+        oninput="filterUsers()"
+        style="max-width: 320px"
+      />
+    </div>
+    <div id="users" style="margin-top: 0.8rem"></div>
+  </div>
+</section>
+
+<script>
+  // Load locations + users on page load
+  (async () => {
+    const locs = await fetch('/api/locations').then((r) => r.json());
+    // Render locations with quick-pick
+    const locBox = document.getElementById('locations');
+    const locTable = document.createElement('table');
+    locTable.style.width = '100%';
+    locTable.style.borderCollapse = 'collapse';
+    locTable.innerHTML = `
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:.4rem;border-bottom:1px solid #1b222c;">ID</th>
+          <th style="text-align:left;padding:.4rem;border-bottom:1px solid #1b222c;">Name</th>
+          <th style="text-align:left;padding:.4rem;border-bottom:1px solid #1b222c;">Country</th>
+          <th style="text-align:left;padding:.4rem;border-bottom:1px solid #1b222c;">Devices</th>
+          <th style="text-align:left;padding:.4rem;border-bottom:1px solid #1b222c;">Pick</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${locs
+          .map(
+            (l) => `
+          <tr>
+            <td style="padding:.35rem .4rem;">${l.id}</td>
+            <td style="padding:.35rem .4rem;">${l.name}</td>
+            <td style="padding:.35rem .4rem;">${l.country}</td>
+            <td style="padding:.35rem .4rem;">${l.device_count}</td>
+            <td style="padding:.35rem .4rem;">
+              <button class="btn" onclick="fillLocation(${l.id})">Use ID ${l.id}</button>
+            </td>
+          </tr>
+        `
+          )
+          .join('')}
+      </tbody>
+    `;
+    locBox.innerHTML = '';
+    locBox.appendChild(locTable);
+
+    await loadUsers(); // populate the users table (defined in app.js below)
+  })();
+</script>
+{% endblock %}
